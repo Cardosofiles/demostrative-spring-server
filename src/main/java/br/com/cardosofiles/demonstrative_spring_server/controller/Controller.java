@@ -1,6 +1,8 @@
 package br.com.cardosofiles.demonstrative_spring_server.controller;
 
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
-
 
 
 @RestController
@@ -38,9 +39,6 @@ public class Controller {
                 + user.getTelephone();
     }
 
-    public record UserRecord(String username) {
-    }
-
     @PostMapping("/headersParams")
     public String postHeadersParams(@RequestHeader("name") String name) {
 
@@ -52,5 +50,18 @@ public class Controller {
         return "Metodo com headerParams: " + headers.entrySet();
     }
 
+    public record UserRecord(String username) {
+    }
+
+    @GetMapping("methodRespondeEntity/{id}")
+    public ResponseEntity<Object> methodResponseEntity(@PathVariable Long id) {
+        var user = new UserRecord("cardosofiles");
+
+        if (id > 5) {
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
+
+        return ResponseEntity.badRequest().body("Número menor que 5");
+    }
 
 }
